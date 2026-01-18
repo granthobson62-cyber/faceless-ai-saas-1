@@ -5,7 +5,8 @@ import os
 # Ensure repo root is in Python path (RENDER FIX)
 sys.path.insert(0, os.path.dirname(__file__))
 
-from backend import orchestrator
+import backend.orchestrator as orchestrator
+
 
 app = FastAPI()
 
