@@ -28,5 +28,4 @@ def run_orchestrator():
 
     except Exception as e:
         print("Error uploading to Wasabi:", e)
-        return {"status": "error", "error": str(e)}
-
+       
