@@ -20,4 +20,3 @@ def run_orchestrator():
 
     time.sleep(2)
     print("Upload complete")
-
