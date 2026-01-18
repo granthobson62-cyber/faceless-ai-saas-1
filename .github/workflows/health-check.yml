@@ -1,0 +1,12 @@
+name: Backend Health Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test backend
+        run: echo "Backend health check placeholder"
