@@ -1,5 +1,6 @@
 from fastapi import BackgroundTasks
-from backend import orchestrator
+import backend.orchestrator as orchestrator
+
 from fastapi import FastAPI
 
 app = FastAPI()
