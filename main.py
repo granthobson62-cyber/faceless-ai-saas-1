@@ -1,5 +1,13 @@
 from fastapi import BackgroundTasks
+import sys
+import os
+
+# Add repo root to Python path
+sys.path.append(os.path.dirname(__file__))
+
+# Now import orchestrator
 from backend import orchestrator
+
 
 
 from fastapi import FastAPI
