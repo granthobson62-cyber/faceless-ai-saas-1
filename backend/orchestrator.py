@@ -15,8 +15,9 @@ def run_orchestrator():
         bucket = os.getenv("WASABI_BUCKET")
         if not bucket:
             raise ValueError("WASABI_BUCKET env var not set")
+filename = f"runs/run-{int(time.time())}.txt"  # "runs/" is the folder prefix
+      print(f"Uploading to bucket: {bucket}, key: {filename}")
 
-       filename = f"runs/run-{int(time.time())}.txt"  # "runs/" is the folder prefix
 s3.put_object(Bucket=os.getenv("WASABI_BUCKET"), Key=filename, Body=b"AI Orchestrator ran successfully.")
 
 
