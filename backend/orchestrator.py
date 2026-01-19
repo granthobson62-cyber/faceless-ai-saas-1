@@ -1,43 +1,39 @@
-import os
-import boto3
-import time
-print("Wasabi access key prefix:", os.getenv("WASABI_ACCESS_KEY")[:4])
 
 def run_orchestrator():
+    import os
+    import time
+    import boto3
+    from botocore.client import Config
+
+    print("Orchestrator started")
+    print("Wasabi access key prefix:", os.getenv("WASABI_ACCESS_KEY")[:4])
+
+    s3 = boto3.client(
+        "s3",
+        endpoint_url="https://s3.ap-southeast-1.wasabisys.com",
+        aws_access_key_id=os.getenv("WASABI_ACCESS_KEY"),
+        aws_secret_access_key=os.getenv("WASABI_SECRET_KEY"),
+        region_name="ap-southeast-1",
+        config=Config(signature_version="s3v4")
+    )
+
+    bucket = os.getenv("WASABI_BUCKET")
+    filename = f"runs/test-{int(time.time())}.txt"
+    content = b"Wasabi upload test"
+
     try:
-        bucket = os.getenv("WASABI_BUCKET")
-        access_key = os.getenv("WASABI_ACCESS_KEY")
-        secret_key = os.getenv("WASABI_SECRET_KEY")
-        region = os.getenv("WASABI_REGION")
-
-        if not bucket or not access_key or not secret_key or not region:
-            raise ValueError("One or more Wasabi env vars are not set")
-
-        # Initialize Wasabi S3 client
-        s3 = boto3.client(
-            "s3",
-            aws_access_key_id=access_key,
-            aws_secret_access_key=secret_key,
-            endpoint_url=f"https://s3.{region}.wasabisys.com",
-            region_name=region,
-            config=boto3.session.Config(signature_version='s3v4')  # Ensure v4 signing
-        )
-
-        # Create a unique file in 'runs/' folder
-        filename = f"runs/run-{int(time.time())}.txt"
-        print(f"Uploading to bucket: {bucket}, key: {filename}")
-
         s3.put_object(
             Bucket=bucket,
             Key=filename,
-            Body=b"AI Orchestrator ran successfully."
+            Body=content
         )
-        print(f"Upload successful: {filename}")
-
-        return {"status": "uploaded", "file": filename}
+        print("Upload successful:", filename)
+        return {"status": "ok", "file": filename}
 
     except Exception as e:
-        print("Error uploading to Wasabi:", e)
+        print("Wasabi upload failed:", str(e))
         return {"status": "error", "error": str(e)}
+
+     
 
  
