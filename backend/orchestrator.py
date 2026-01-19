@@ -4,40 +4,39 @@ import time
 
 def run_orchestrator():
     try:
-        # Initialize Wasabi S3 client with correct Singapore region endpoint
+        bucket = os.getenv("WASABI_BUCKET")
+        access_key = os.getenv("WASABI_ACCESS_KEY")
+        secret_key = os.getenv("WASABI_SECRET_KEY")
+        region = os.getenv("WASABI_REGION")
+
+        if not bucket or not access_key or not secret_key or not region:
+            raise ValueError("One or more Wasabi env vars are not set")
+
+        # Initialize Wasabi S3 client
         s3 = boto3.client(
             "s3",
-            endpoint_url="https://s3.ap-southeast-1.wasabisys.com",
-            aws_access_key_id=os.getenv("WASABI_ACCESS_KEY"),
-            aws_secret_access_key=os.getenv("WASABI_SECRET_KEY"),
-            region_name=os.getenv("WASABI_REGION")  # Must match ap-southeast-1
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+            endpoint_url=f"https://s3.{region}.wasabisys.com",
+            region_name=region,
+            config=boto3.session.Config(signature_version='s3v4')  # Ensure v4 signing
         )
 
-        # Get bucket from environment
-        bucket = os.getenv("WASABI_BUCKET")
-        if not bucket:
-            raise ValueError("WASABI_BUCKET env var not set")
-
-        # Create a unique filename in 'runs/' folder
+        # Create a unique file in 'runs/' folder
         filename = f"runs/run-{int(time.time())}.txt"
-
-        # DEBUG print: shows what will be uploaded
         print(f"Uploading to bucket: {bucket}, key: {filename}")
 
-        # Upload a simple text file to Wasabi
         s3.put_object(
             Bucket=bucket,
             Key=filename,
             Body=b"AI Orchestrator ran successfully."
         )
-
-        # Confirm success
         print(f"Upload successful: {filename}")
+
         return {"status": "uploaded", "file": filename}
 
     except Exception as e:
         print("Error uploading to Wasabi:", e)
         return {"status": "error", "error": str(e)}
 
-    
-
+ 
