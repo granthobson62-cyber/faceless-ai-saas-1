@@ -14,7 +14,11 @@ def run_orchestrator():
         aws_access_key_id=os.getenv("WASABI_ACCESS_KEY"),
         aws_secret_access_key=os.getenv("WASABI_SECRET_KEY"),
         region_name="ap-southeast-1",
-        config=Config(signature_version="s3v4")
+        config=Config(
+    signature_version="s3v4",
+    s3={"addressing_style": "path"}
+)
+
     )
 
     bucket = os.getenv("WASABI_BUCKET")
