@@ -1,6 +1,7 @@
 import os
 import boto3
 import time
+print("Wasabi access key prefix:", os.getenv("WASABI_ACCESS_KEY")[:4])
 
 def run_orchestrator():
     try:
