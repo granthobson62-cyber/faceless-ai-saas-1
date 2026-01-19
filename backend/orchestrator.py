@@ -1,6 +1,6 @@
+import os
 import boto3
 from botocore.client import Config
-import os
 
 def run_orchestrator():
     try:
@@ -11,7 +11,10 @@ def run_orchestrator():
             endpoint_url="https://s3.ap-southeast-1.wasabisys.com",
             config=Config(
                 signature_version="s3v4",
-                s3={"payload_signing_enabled": False}
+                s3={
+                    "addressing_style": "path",
+                    "payload_signing_enabled": False
+                }
             )
         )
 
@@ -28,3 +31,4 @@ def run_orchestrator():
             "status": "error",
             "error": str(e)
         }
+
