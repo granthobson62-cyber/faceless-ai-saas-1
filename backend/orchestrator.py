@@ -4,6 +4,7 @@ import time
 
 def run_orchestrator():
     try:
+        # Initialize Wasabi S3 client
         s3 = boto3.client(
             "s3",
             endpoint_url="https://s3.wasabisys.com",
@@ -15,19 +16,14 @@ def run_orchestrator():
         bucket = os.getenv("WASABI_BUCKET")
         if not bucket:
             raise ValueError("WASABI_BUCKET env var not set")
-filename = f"runs/run-{int(time.time())}.txt"  # "runs/" is the folder prefix
-      print(f"Uploading to bucket: {bucket}, key: {filename}")
 
-s3.put_object(Bucket=os.getenv("WASABI_BUCKET"), Key=filename, Body=b"AI Orchestrator ran successfully.")
-
-
+        filename = f"runs/run-{int(time.time())}.txt"
+        print(f"Uploading to bucket: {bucket}, key: {filename}")  # DEBUG LINE
+        s3.put_object(Bucket=bucket, Key=filename, Body=b"AI Orchestrator ran successfully.")
         print(f"Upload successful: {filename}")
+
         return {"status": "uploaded", "file": filename}
 
     except Exception as e:
         print("Error uploading to Wasabi:", e)
         return {"status": "error", "error": str(e)}
-
-    except Exception as e:
-        print("Error uploading to Wasabi:", e)
-       
