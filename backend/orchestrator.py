@@ -3,6 +3,8 @@ def run_orchestrator():
     import boto3
     from botocore.client import Config
 
+    print("orchestrator started")
+
     s3 = boto3.client(
         "s3",
         endpoint_url="https://s3.ap-southeast-1.wasabisys.com",
@@ -22,6 +24,7 @@ def run_orchestrator():
             "buckets": [b["Name"] for b in buckets["Buckets"]]
         }
     except Exception as e:
-        return {"status": "error", "error": str(e)}
-
-
+        return {
+            "status": "error",
+            "error": str(e)
+        }
