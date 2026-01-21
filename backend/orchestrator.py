@@ -98,7 +98,24 @@ def run_orchestrator():
     except Exception as e:
         print(f"[Orchestrator] Error: {str(e)}")
         return {"status": "error", "error": str(e)}
+def run_orchestrator():
+    try:
+        print("Orchestrator started")
 
+        # 👇 CALL YOUR EXISTING LOGIC HERE
+        result = orchestrate()   # or whatever your main function is called
+
+        return {
+            "status": "ok",
+            "result": result
+        }
+
+    except Exception as e:
+        print("Orchestrator error:", str(e))
+        return {
+            "status": "error",
+            "error": str(e)
+        }
        
         
 
