@@ -134,6 +134,40 @@ def upload_to_youtube(video_path, title, description):
         },
         media_body=MediaFileUpload(video_path),
     )
+def upload_to_youtube(video_path, title, description):
+    scopes = ["https://www.googleapis.com/auth/youtube.upload"]
+
+    flow = InstalledAppFlow.from_client_config(
+        {
+            "installed": {
+                "client_id": os.environ["YOUTUBE_CLIENT_ID"],
+                "client_secret": os.environ["YOUTUBE_CLIENT_SECRET"],
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+            }
+        },
+        scopes=scopes,
+    )
+
+    creds = flow.run_console()
+    youtube = build("youtube", "v3", credentials=creds)
+
+    request = youtube.videos().insert(
+        part="snippet,status",
+        body={
+            "snippet": {
+                "title": title,
+                "description": description,
+                "tags": ["ai", "automation", "faceless"],
+                "categoryId": "22",
+            },
+            "status": {"privacyStatus": "public"},
+        },
+        media_body=MediaFileUpload(video_path),
+    )
+
+    response = request.execute()
+    return f"https://www.youtube.com/watch?v={response['id']}"
 
     response = request.execute()
     return f"https://www.youtube.com/watch?v={response['id']}"
